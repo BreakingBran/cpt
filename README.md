@@ -1,7 +1,4 @@
-# Cpt and other files
-
-Grade 11 CPT
+# Player Movement functions and testing
 
 GOAL:
-
-To create a python program using all knowledge learned throughout the course
+To create functions that allow player movement
