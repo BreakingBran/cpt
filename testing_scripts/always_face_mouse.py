@@ -1,44 +1,78 @@
 '''
-Always Face Mouse
+Always Face Mouse (DONE)
 '''
-# 
+# Sources used
 # http://stackoverflow.com/questions/20162302/pygame-point-image-towards-mouse
+# http://cs.iupui.edu/~aharris/pygame/ch08/rotate.py
 
-import pygame, random, math
+import pygame
 from pygame import *
 from math import *
-#math.atan2(y, x)
 
-
-# Goal is to make a level generator
 
 class Player(pygame.sprite.Sprite):
 
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
 
-        # Width and height of character
+        # Width and height of image
         self.width = 40
         self.height = 40
-        self.image = pygame.Surface([self.width,self.height])
+
+        # Creates images (CREATE TWO, one for refrence later)
+        self.imageMaster = pygame.Surface([self.width,self.height])
+        self.image = self.imageMaster
+
+        # Fills the image with white
         self.image.fill(white)
+
+        # Makes transparent background
+        # YOU NEED THIS FOR IT TO ROTATE
         self.image.set_colorkey(red)
         
-        # Draw rectangle as character on screen
-        #pygame.draw.rect(self.image,white,[0,0,self.width,self.height])
-        
-        # Get rect frame
+        # Get rect frame of image
         self.rect = self.image.get_rect()
+
         # angle to face mouse
         self.rect.x = 150
         self.rect.y = 150
+
+        # Just placeholder
         self.angle = 0
 
+    def get_pos(self):
+        # Get mouse cords while game running
+        self.pos = pygame.mouse.get_pos()
+
+        # Get change in X and y dy/dy
+        self.dy = self.pos[1] - self.rect.y
+        self.dx = self.pos[0] - self.rect.x
+
+        # Get angle from mouse and player
+        self.mouse_angle = atan2(-self.dy,self.dx)
+        self.mouse_angle %= 2*pi
+        self.mouse_angle = degrees(self.mouse_angle)
+
+        # Sets angle value in class
+        self.angle = self.mouse_angle
+
+        
     def update(self):
-        
-        self.rotate = pygame.transform.rotate(self.image, self.angle)
-        screen.blit(self.rotate, self.rect)
-        
+        # Gets mouse position
+        self.get_pos()
+
+        # Gets the old center point
+        self.centerpoint = self.rect.center
+
+        # Rotate sprite
+        self.image = pygame.transform.rotate(self.imageMaster ,self.angle)
+
+        # Get rectangle frame
+        self.rect = self.image.get_rect()
+
+        # Sets the new image to the old center point
+        # Makes sure the sprite does not go flying to oblivion
+        self.rect.center = self.centerpoint
     
 pygame.init()
 
@@ -68,6 +102,9 @@ all_sprites_list.add(player)
 # Game time for clock functions
 clock = pygame.time.Clock()
 
+# Fill background (Makes cicle, when loop screen.fill is commented)
+#screen.fill(bg)
+
 # LOOP
 done = False
 
@@ -77,33 +114,20 @@ while not done:
             if event.type == pygame.QUIT:
                 done = True
 
-        screen.fill(bg)
-
-            # Get mouse cords while game running
-        pos = pygame.mouse.get_pos()
-
-        dy = pos[1] - player.rect.y
-        dx = pos[0] - player.rect.x
-
-            # WIP get angle from mouse and player
-        mouse_angle = atan2(-dy,dx)
-        mouse_angle %= 2*pi
-        mouse_angle = degrees(mouse_angle)
-        player.angle = mouse_angle
-        
-
-            # Call update function of sprites
+        # Call update function of sprites
         all_sprites_list.update()
 
-            # Draw all sprites on screen
+        # fills background color
+        screen.fill(bg)
+
+        # Draw all sprites on screen
         all_sprites_list.draw(screen)
 
-            # Set tick rate to 60
+        # Set tick rate to 60
         clock.tick(60)
 
-            # Redraw screen
+        # Redraw screen
         pygame.display.flip()
-
 
 # Quit if loop is exited
 pygame.quit()
