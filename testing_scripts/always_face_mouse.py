@@ -45,8 +45,8 @@ class Player(pygame.sprite.Sprite):
         self.pos = pygame.mouse.get_pos()
 
         # Get change in X and y dy/dy
-        self.dy = self.pos[1] - self.rect.y
-        self.dx = self.pos[0] - self.rect.x
+        self.dy = self.pos[1] - self.rect.y - 20
+        self.dx = self.pos[0] - self.rect.x - 20
 
         # Get angle from mouse and player
         self.mouse_angle = atan2(-self.dy,self.dx)
