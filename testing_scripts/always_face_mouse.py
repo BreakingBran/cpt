@@ -45,17 +45,18 @@ class Player(pygame.sprite.Sprite):
         self.pos = pygame.mouse.get_pos()
 
         # Get change in X and y dy/dy
-        self.dy = self.pos[1] - self.rect.y - 20
-        self.dx = self.pos[0] - self.rect.x - 20
+        self.dy = self.pos[1] - self.rect.y -20
+        self.dx = self.pos[0] - self.rect.x -20
 
         # Get angle from mouse and player
         self.mouse_angle = atan2(-self.dy,self.dx)
-        self.mouse_angle %= 2*pi
+        # Var for move function
         self.mouse_angle = degrees(self.mouse_angle)
-
+        self.angle_move = self.mouse_angle
         # Sets angle value in class
         self.angle = self.mouse_angle
-
+        if self.angle < 0:
+            self.angle += 360
         
     def update(self):
         # Gets mouse position
